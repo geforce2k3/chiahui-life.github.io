@@ -1,0 +1,900 @@
+<!DOCTYPE html>
+<html lang="zh-TW" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ruby's Assurance Hub</title>
+  <!-- Google Fonts: Noto Sans TC（全站字體） -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            // 主色：深湖水綠（以 #037A7A 為基準）
+            brand: {
+              50: '#E6F4F4',
+              100: '#CCE8E8',
+              200: '#99D1D1',
+              500: '#037A7A',
+              600: '#026262',
+              700: '#024A4A',
+            },
+            // 輔色：冬陽蜂蜜黃
+            warm: {
+              50: '#fffaf3',
+              100: '#fdf1de',
+              200: '#f6dfbd',
+              300: '#f5c78a',
+              400: '#eea95a',
+              600: '#c9782f',
+            },
+            // 背景：#037A7A 淡化後的湖水綠
+            sea: {
+              50: '#EDF6F6',
+              100: '#DEEEEE',
+              200: '#C3E1E0',
+            },
+            ink: {
+              DEFAULT: '#5b3a29',
+              soft: '#8a6552',
+            }
+          },
+          fontFamily: {
+            sans: ['"Noto Sans TC"', 'sans-serif'],
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    body {
+      background:
+        radial-gradient(circle at 85% 0%, rgba(255, 255, 255, 0.7), transparent 40%),
+        #EDF6F6;
+    }
+    .glass-nav {
+      background: rgba(237, 246, 246, 0.9);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+    }
+    /* 暖暖的柔和陰影 */
+    .warm-shadow {
+      box-shadow: 0 10px 28px -14px rgba(3, 122, 122, 0.35);
+    }
+    /* 手繪感的不規則圓形底 */
+    .blob {
+      border-radius: 58% 42% 55% 45% / 50% 58% 42% 50%;
+    }
+    .blob-2 {
+      border-radius: 45% 55% 40% 60% / 55% 45% 55% 45%;
+    }
+    /* 手寫 icon：線條本身就畫得歪歪的 */
+    .sketch {
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 1.8;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+    .card-tilt-l { transform: rotate(-0.6deg); }
+    .card-tilt-r { transform: rotate(0.6deg); }
+    .card-tilt-l:hover, .card-tilt-r:hover { transform: rotate(0deg) translateY(-3px); }
+  </style>
+</head>
+<body class="text-ink font-sans antialiased selection:bg-warm-300 selection:text-brand-700">
+
+  <!-- 手寫風 icon 庫（隱藏，下面用 <use> 引用） -->
+  <svg width="0" height="0" class="absolute" aria-hidden="true">
+    <defs>
+      <filter id="rough" x="-10%" y="-10%" width="120%" height="120%">
+        <feTurbulence type="fractalNoise" baseFrequency="0.08" numOctaves="2" seed="4"/>
+        <feDisplacementMap in="SourceGraphic" scale="1.1"/>
+      </filter>
+      <filter id="roughBig" x="-5%" y="-5%" width="110%" height="110%">
+        <feTurbulence type="fractalNoise" baseFrequency="0.03" numOctaves="2" seed="7"/>
+        <feDisplacementMap in="SourceGraphic" scale="4"/>
+      </filter>
+    </defs>
+    <symbol id="i-home" viewBox="0 0 24 24">
+      <path d="M3.6 11.6 12 4.1l8.4 7.3"/><path d="M6 10.2v9.5h12.1V10"/>
+      <path d="M12 17.6c-1.8-1.2-3.1-2.3-3-3.7 0-.9.7-1.6 1.5-1.6.7 0 1.2.4 1.5 1 .3-.6.8-1 1.5-1 .9 0 1.5.7 1.5 1.6 0 1.4-1.3 2.5-3 3.7z"/>
+    </symbol>
+    <symbol id="i-check" viewBox="0 0 24 24">
+      <path d="M12 3.2c4.8-.3 8.9 3.6 8.8 8.6-.1 4.9-4 8.6-8.9 8.5C7 20.2 3.1 16.4 3.3 11.6 3.5 7 7.3 3.4 12 3.2z"/>
+      <path d="M8 12.3l2.6 2.8 5.6-6.3"/>
+    </symbol>
+    <symbol id="i-coin" viewBox="0 0 24 24">
+      <path d="M9 3.5c1.8.8 4.2.8 6 0l-1.6 3.2h-2.9z"/>
+      <path d="M10.4 6.8C6 9 4 13 4.6 16.6c.5 3 3.4 4.2 7.4 4.1 4.1 0 6.9-1.3 7.3-4.3.5-3.6-1.6-7.5-6-9.6"/>
+      <path d="M13.8 11c-.6-.8-1.3-1-2-1-1.1 0-1.9.6-1.9 1.4 0 1.9 4.2 1 4.2 3 0 .9-.9 1.5-2.1 1.5-.9 0-1.7-.4-2.2-1.1M12 9v1M12 16v1.2"/>
+    </symbol>
+    <symbol id="i-doc" viewBox="0 0 24 24">
+      <path d="M6.2 3.4l8.3-.2 3.6 3.8.3 13.6-12.3.2z"/><path d="M14.4 3.3l-.1 3.9 3.9-.1"/>
+      <path d="M8.8 11.2l6.5-.1M8.9 14.6l6.2.1M9 17.8l4-.1"/>
+    </symbol>
+    <symbol id="i-chat" viewBox="0 0 24 24">
+      <path d="M4 11.5C4 7.3 7.6 4.3 12.2 4.4c4.6.1 8 3.2 7.8 7.2-.2 4-3.9 6.9-8.4 6.8-1.1 0-2.1-.2-3-.5L4.6 19.6l1.2-3.5C4.6 14.8 4 13.2 4 11.5z"/>
+      <path d="M8.5 11.6h.1M12 11.5h.1M15.5 11.6h.1" stroke-width="2.6"/>
+    </symbol>
+    <symbol id="i-camera" viewBox="0 0 24 24">
+      <path d="M3.6 8.3c0-1 .8-1.7 1.8-1.7h2.3l1.5-2.2h5.7l1.5 2.2h2.4c1 0 1.7.8 1.7 1.7l-.2 9.6c0 1-.8 1.7-1.8 1.7H5.4c-1 0-1.8-.8-1.8-1.8z"/>
+      <path d="M12 9.6c2.1-.1 3.7 1.5 3.7 3.5 0 2-1.7 3.5-3.7 3.5s-3.6-1.6-3.6-3.5c0-2 1.6-3.5 3.6-3.5z"/>
+    </symbol>
+    <symbol id="i-video" viewBox="0 0 24 24">
+      <path d="M3.8 7.4c0-.9.7-1.6 1.6-1.6l8.7.1c.9 0 1.6.7 1.6 1.6l-.1 9.1c0 .9-.7 1.6-1.6 1.6H5.3c-.9 0-1.6-.7-1.6-1.6z"/>
+      <path d="M15.8 10.4l4.5-2.7-.2 8.6-4.3-2.6"/>
+    </symbol>
+    <symbol id="i-clipboard" viewBox="0 0 24 24">
+      <path d="M6.4 5.2l11.2-.1.4 15.2-11.9.1z"/><path d="M9.3 3.6h5.4l.2 2.7H9.2z"/>
+      <path d="M9 11l1.6 1.6 3.3-3.4M9.2 16h5.8"/>
+    </symbol>
+    <symbol id="i-lock" viewBox="0 0 24 24">
+      <path d="M5.6 11.2l12.7-.1.3 9.1-13.1.2z"/>
+      <path d="M8.3 11V8.1C8.3 5.8 10 4 12.1 4s3.7 1.8 3.7 4.1V11"/><path d="M12 14.6v2.4"/>
+    </symbol>
+    <symbol id="i-arrow" viewBox="0 0 24 24">
+      <path d="M4 12.4c5.2-.6 10.4-.4 15.4-.2M14.6 7.2c1.5 1.9 3.2 3.4 5 5-1.9 1.4-3.5 3-5 5"/>
+    </symbol>
+    <symbol id="i-menu" viewBox="0 0 24 24">
+      <path d="M4 6.6c5.4-.5 10.7-.3 16 .1M4.2 12.2c5.2.3 10.4-.2 15.6.1M4 17.6c4.4-.3 8.8-.1 13.2.2"/>
+    </symbol>
+    <symbol id="i-heart" viewBox="0 0 24 24">
+      <path d="M12 20c-4.6-3-8.3-6.3-8.2-10 .1-2.6 2-4.5 4.4-4.5 1.7 0 3 1 3.8 2.4.9-1.5 2.2-2.4 3.9-2.4 2.5 0 4.3 2 4.2 4.6-.1 3.7-3.7 6.9-8.1 9.9z"/>
+    </symbol>
+    <symbol id="i-shield" viewBox="0 0 24 24">
+      <path d="M12 3.4l7.4 2.7c.3 6.8-2.3 11.6-7.4 14.5-5.2-2.9-7.7-7.7-7.5-14.5z"/><path d="M9 12l2.2 2.3 4-4.4"/>
+    </symbol>
+    <symbol id="i-medical" viewBox="0 0 24 24">
+      <path d="M9.6 4h4.8l-.1 5.5 5.6.1v4.8l-5.6-.1.1 5.7H9.7l-.1-5.7-5.6.1V9.6l5.6-.1z"/>
+    </symbol>
+    <symbol id="i-sun" viewBox="0 0 24 24">
+      <path d="M12 7.6c2.5-.1 4.5 1.9 4.4 4.4 0 2.4-2 4.4-4.4 4.4-2.5 0-4.5-2-4.4-4.5.1-2.4 2-4.3 4.4-4.3z"/>
+      <path d="M12 2.6v2M12 19.4v2M2.6 12h2M19.4 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M5.3 18.7l1.4-1.4M17.3 6.7l1.4-1.4"/>
+    </symbol>
+    <symbol id="i-pin" viewBox="0 0 24 24">
+      <path d="M12 20.8c-3.8-4.4-6.2-7.8-6.1-11 .1-3.3 2.8-5.9 6.1-5.9 3.4 0 6.1 2.7 6.1 6-.1 3.2-2.4 6.6-6.1 10.9z"/>
+      <path d="M12 7.6c1.3 0 2.3 1 2.3 2.3 0 1.2-1 2.2-2.3 2.2s-2.3-1-2.3-2.3c0-1.2 1-2.2 2.3-2.2z"/>
+    </symbol>
+    <symbol id="i-question" viewBox="0 0 24 24">
+      <path d="M12 3.2c4.8-.3 8.9 3.6 8.8 8.6-.1 4.9-4 8.6-8.9 8.5C7 20.2 3.1 16.4 3.3 11.6 3.5 7 7.3 3.4 12 3.2z"/>
+      <path d="M9.6 9.4c.2-1.4 1.3-2.3 2.6-2.3 1.4 0 2.5 1 2.4 2.3-.1 1.9-2.6 2-2.6 3.9M12 16.4h.1" />
+    </symbol>
+  </svg>
+
+  <!-- 導航列 (Navigation) -->
+  <header class="fixed top-0 left-0 right-0 z-50 glass-nav border-b border-sea-200 transition-all duration-300">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+      <a href="#" class="flex items-center gap-2.5 group">
+        <div class="w-10 h-10 blob bg-brand-200 text-brand-700 flex items-center justify-center group-hover:rotate-6 transition-transform">
+          <svg class="w-6 h-6 sketch"><use href="#i-home"/></svg>
+        </div>
+        <div>
+          <span class="text-lg font-bold tracking-tight text-brand-700 block leading-tight whitespace-nowrap">Ruby 安心工坊</span>
+          <span class="text-xs text-[#161d26] whitespace-nowrap">前電子業 PM ‧ 兩個小孩的媽</span>
+        </div>
+      </a>
+
+      <!-- Desktop Nav -->
+      <nav class="hidden xl:flex items-center gap-6 whitespace-nowrap text-sm text-brand-600 font-medium">
+        <a href="#pain-points" class="hover:text-brand-700 hover:underline underline-offset-4 decoration-2 transition-colors">你是不是也這樣</a>
+        <a href="#about" class="hover:text-brand-700 hover:underline underline-offset-4 decoration-2 transition-colors">我是誰</a>
+        <a href="#calculator" class="hover:text-brand-700 hover:underline underline-offset-4 decoration-2 transition-colors">3 分鐘小測驗</a>
+        <a href="#process" class="hover:text-brand-700 hover:underline underline-offset-4 decoration-2 transition-colors">怎麼聊</a>
+        <a href="#cases" class="hover:text-brand-700 hover:underline underline-offset-4 decoration-2 transition-colors">朋友的例子</a>
+      </nav>
+
+      <!-- Header Action Button -->
+      <div class="hidden sm:flex items-center gap-3 ml-auto xl:ml-0 mr-2 xl:mr-0">
+        <a href="#booking" class="bg-brand-500 hover:bg-brand-600 text-white text-sm font-medium px-4 py-2 rounded-lg warm-shadow transition-all duration-200 flex items-center gap-1.5">
+          <span>約 30 分鐘聊聊</span>
+          <svg class="w-4 h-4 sketch"><use href="#i-arrow"/></svg>
+        </a>
+      </div>
+
+      <!-- Mobile Menu Toggle Button -->
+      <button id="mobileMenuBtn" class="xl:hidden p-2 rounded-lg text-brand-700 hover:bg-warm-100 focus:outline-none" aria-label="Toggle Navigation">
+        <svg class="w-6 h-6 sketch"><use href="#i-menu"/></svg>
+      </button>
+    </div>
+
+    <!-- Mobile Dropdown Menu -->
+    <div id="mobileMenu" class="hidden xl:hidden px-4 pt-2 pb-5 border-t border-sea-200 bg-sea-50/95 backdrop-blur-md">
+      <div class="flex flex-col space-y-3 text-sm text-brand-600 font-medium">
+        <a href="#pain-points" class="py-2 border-b border-sea-200 mobile-nav-link">你是不是也這樣</a>
+        <a href="#about" class="py-2 border-b border-sea-200 mobile-nav-link">我是誰</a>
+        <a href="#calculator" class="py-2 border-b border-sea-200 mobile-nav-link">3 分鐘小測驗</a>
+        <a href="#process" class="py-2 border-b border-sea-200 mobile-nav-link">怎麼聊</a>
+        <a href="#cases" class="py-2 border-b border-sea-200 mobile-nav-link">朋友的例子</a>
+        <a href="#booking" class="mt-2 text-center bg-brand-500 text-white py-2.5 rounded-lg font-medium mobile-nav-link">約 30 分鐘聊聊（不推銷）</a>
+      </div>
+    </div>
+  </header>
+
+  <main class="pt-16">
+    <!-- Hero 主視覺區 -->
+    <section class="relative overflow-hidden py-14 md:py-24 lg:py-28">
+      <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 grid lg:grid-cols-2 gap-10 lg:gap-14 items-center">
+
+        <!-- 左：文字 -->
+        <div class="text-center lg:text-left">
+          <div class="inline-flex items-center gap-2 px-3 py-1 rounded-lg bg-brand-500 text-white text-sm mb-6">
+            <svg class="w-4 h-4 sketch"><use href="#i-sun"/></svg>
+            <span>不講話術 ‧ 會算數 ‧ 也在顧小孩</span>
+          </div>
+
+          <h1 class="text-[1.7rem] sm:text-[2.7rem] lg:text-[2.35rem] xl:text-[3rem] font-bold text-brand-700 tracking-tight leading-tight mb-6">
+            保險不用買到心很累，<br>
+            先幫你把家裡的<span class="relative inline-block text-brand-500">保單<svg class="absolute -bottom-2 left-0 w-full h-4" viewBox="0 0 100 16" preserveAspectRatio="none" aria-hidden="true"><path d="M3 11C22 4 45 13 62 7s26-3 35 1" fill="none" stroke="#66B8B8" stroke-width="5" stroke-linecap="round"/></svg></span>看懂就好。
+          </h1>
+
+          <p class="max-w-xl mx-auto lg:mx-0 text-base sm:text-lg text-[#161d26] leading-relaxed mb-8">
+            以前在電子業當了 8 年 PM，<br>現在是每天被兩隻小的追著跑的媽媽。<br class="hidden sm:inline">
+            我不會叫你一定要買什麼，只是想幫你看看：<br>錢有沒有花在對的地方、哪裡還缺一塊。
+          </p>
+
+          <div class="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-3 mb-10">
+            <a href="#booking" class="w-full sm:w-auto px-6 py-3.5 rounded-lg bg-brand-500 hover:bg-brand-600 text-white font-medium text-base warm-shadow transition-all text-center flex items-center justify-center gap-2">
+              <span>約 30 分鐘幫你看保單</span>
+            </a>
+            <a href="#calculator" class="w-full sm:w-auto px-6 py-3.5 rounded-lg bg-white hover:bg-warm-100 text-brand-700 font-medium text-base border border-warm-200 transition-all text-center">
+              先玩 3 分鐘小測驗
+            </a>
+          </div>
+
+          <!-- 小保證 -->
+          <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 max-w-xl mx-auto lg:mx-0 pt-5 border-t border-dashed border-warm-300 text-sm text-[#161d26]">
+            <div class="flex items-center justify-center lg:justify-start gap-1.5">
+              <svg class="w-5 h-5 text-brand-500 shrink-0 sketch"><use href="#i-check"/></svg><span>有話直說</span>
+            </div>
+            <div class="flex items-center justify-center lg:justify-start gap-1.5">
+              <svg class="w-5 h-5 text-brand-500 shrink-0 sketch"><use href="#i-check"/></svg><span>幫你省冤枉錢</span>
+            </div>
+            <div class="flex items-center justify-center lg:justify-start gap-1.5">
+              <svg class="w-5 h-5 text-brand-500 shrink-0 sketch"><use href="#i-check"/></svg><span>條款講人話</span>
+            </div>
+            <div class="flex items-center justify-center lg:justify-start gap-1.5">
+              <svg class="w-5 h-5 text-brand-500 shrink-0 sketch"><use href="#i-check"/></svg><span>生活少點擔心</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- 右：手繪插圖（冬陽下的家） -->
+        <div class="relative max-w-md lg:max-w-none mx-auto w-full">
+          <svg viewBox="0 0 520 470" class="w-full h-auto" role="img" aria-label="冬天暖陽下的一家人和小房子">
+            <g filter="url(#roughBig)" stroke="#6b3a22" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round">
+              <!-- 地面 -->
+              <path d="M20 400 C140 380 380 385 500 402 L500 450 C360 460 160 460 20 450 Z" fill="#fbe3c4"/>
+              <!-- 太陽 -->
+              <circle cx="410" cy="105" r="52" fill="#f6c177"/>
+              <g stroke="#e0914a" stroke-width="4">
+                <path d="M476 105H494M467 72L483 63M443 48L452 32M410 39V21M377 48L368 32M353 72L337 63M344 105H326M353 138L337 147M377 162L368 178M410 171V189M443 162L452 178M467 138L483 147"/>
+              </g>
+              <circle cx="393" cy="99" r="3.5" fill="#6b3a22" stroke="none"/>
+              <circle cx="427" cy="99" r="3.5" fill="#6b3a22" stroke="none"/>
+              <path d="M392 117 Q410 131 428 117" fill="none"/>
+              <!-- 小雪花 -->
+              <g stroke="#e8b98f" stroke-width="2.5">
+                <path d="M60 85v14M53 92h14M55 87l10 10M65 87l-10 10"/>
+                <path d="M130 160v12M124 166h12"/>
+                <path d="M250 70v12M244 76h12M246 72l8 8M254 72l-8 8"/>
+                <path d="M72 280v12M66 286h12"/>
+                <path d="M488 230v12M482 236h12"/>
+              </g>
+              <!-- 房子 -->
+              <path d="M290 205 L290 172 L314 172 L314 224" fill="#d9794a"/>
+              <path d="M302 160 C290 148 316 140 302 126 C290 114 312 104 304 92" fill="none" stroke="#c9a58a" stroke-width="3"/>
+              <path d="M150 250 L330 248 L332 394 L148 396 Z" fill="#fff6ea"/>
+              <path d="M126 258 L240 168 L356 256 Z" fill="#e8956a"/>
+              <path d="M216 394 L216 324 Q240 304 264 324 L264 394" fill="#f0b27a"/>
+              <circle cx="255" cy="360" r="3" fill="#6b3a22" stroke="none"/>
+              <path d="M168 280 L204 279 L205 314 L167 315 Z" fill="#fde7b0"/>
+              <path d="M186 280 V314 M168 297 H204" fill="none" stroke-width="2.5"/>
+              <path d="M276 279 L312 280 L311 315 L275 314 Z" fill="#fde7b0"/>
+              <path d="M293 307 C284 301 280 296 281 291 C282 286 289 285 293 290 C297 285 304 286 305 291 C306 296 302 301 293 307Z" fill="#e0714a" stroke-width="2"/>
+              <!-- 一家人（圍巾是冬天限定） -->
+              <circle cx="385" cy="300" r="16" fill="#f3c9a6"/>
+              <path d="M366 394 L370 332 Q385 318 400 332 L404 394 Z" fill="#c8693b"/>
+              <path d="M371 322 Q385 332 399 322 L400 331 Q385 339 370 331 Z" fill="#f6c177" stroke-width="2.5"/>
+              <path d="M394 332 L397 352" stroke="#f6c177" stroke-width="5"/>
+              <circle cx="430" cy="336" r="12" fill="#f3c9a6"/>
+              <path d="M416 396 L418 358 Q430 348 442 358 L444 396 Z" fill="#eea95a"/>
+              <circle cx="463" cy="354" r="10" fill="#f3c9a6"/>
+              <path d="M452 398 L453 370 Q463 362 473 370 L474 398 Z" fill="#e0714a"/>
+              <path d="M401 348 Q410 356 418 364 M443 366 Q448 371 453 376" fill="none"/>
+            </g>
+            <!-- 手寫註解 -->
+            <g font-family="'Noto Sans TC', sans-serif" font-weight="700" fill="#161d26">
+              <text x="22" y="200" font-size="24" transform="rotate(-6 22 200)">看懂保單</text>
+              <text x="176" y="444" font-size="22">一家人安心過冬 ♡</text>
+            </g>
+            <path d="M70 212 Q100 236 136 256" fill="none" stroke="#026262" stroke-width="2.5" stroke-linecap="round" filter="url(#roughBig)"/>
+            <path d="M126 246 L137 257 L122 260" fill="none" stroke="#026262" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+      </div>
+    </section>
+
+    <!-- 痛點共鳴區 (Pain Points) -->
+    <section id="pain-points" class="py-14 md:py-24 bg-sea-100 border-y border-sea-200">
+      <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center max-w-2xl mx-auto mb-12">
+          <span class="inline-block px-3 py-1 rounded-lg bg-brand-500 text-white text-sm">說真的</span>
+          <h2 class="text-3xl md:text-4xl font-bold text-brand-700 mt-3 tracking-tight">這些問題，你是不是也想問但不好意思問？</h2>
+          <p class="text-[#161d26] text-sm sm:text-base mt-3">大部分人不是不想買，是條款看不懂，又怕一問就被盯上。</p>
+        </div>
+
+        <div class="grid md:grid-cols-3 gap-6">
+          <div class="card-tilt-l bg-white rounded-2xl p-6 border border-warm-200 warm-shadow transition-all duration-300">
+            <div class="w-14 h-14 blob bg-brand-100 text-brand-600 flex items-center justify-center mb-4">
+              <svg class="w-8 h-8 sketch"><use href="#i-coin"/></svg>
+            </div>
+            <h3 class="text-xl font-bold text-brand-700 mb-2">房貸、幼兒園、尿布錢一直扣，保險到底先保誰？</h3>
+            <p class="text-sm text-[#161d26] leading-relaxed">
+              小孩剛出生，每個月錢都不知道飛去哪。到底要先幫寶寶買，還是先顧好家裡賺錢的那個？買少怕不夠，買多又怕月底吃土。
+            </p>
+          </div>
+
+          <div class="card-tilt-r bg-white rounded-2xl p-6 border border-warm-200 warm-shadow transition-all duration-300">
+            <div class="w-14 h-14 blob-2 bg-brand-100 text-brand-600 flex items-center justify-center mb-4">
+              <svg class="w-8 h-8 sketch"><use href="#i-doc"/></svg>
+            </div>
+            <h3 class="text-xl font-bold text-brand-700 mb-2">抽屜裡一疊保單，真的出事到底賠多少？</h3>
+            <p class="text-sm text-[#161d26] leading-relaxed">
+              每年繳好幾萬，可是住院的時候能領多少，老實說自己也不知道。條款像天書，搞不好有些重複繳、有些根本沒保到。
+            </p>
+          </div>
+
+          <div class="card-tilt-l bg-white rounded-2xl p-6 border border-warm-200 warm-shadow transition-all duration-300">
+            <div class="w-14 h-14 blob bg-brand-50 text-brand-600 flex items-center justify-center mb-4">
+              <svg class="w-8 h-8 sketch"><use href="#i-chat"/></svg>
+            </div>
+            <h3 class="text-xl font-bold text-brand-700 mb-2">只是想問一下，不想被追著跑</h3>
+            <p class="text-sm text-[#161d26] leading-relaxed">
+              每次問業務，聽到的都是「這張要停賣了快買」「這個一定要加」。只是想搞清楚狀況，最後壓力大到乾脆不問了。
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 關於我區塊 (About Me) -->
+    <section id="about" class="py-16 md:py-24 max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="grid md:grid-cols-12 gap-8 lg:gap-12 items-center">
+
+        <!-- 左：個人卡片 -->
+        <div class="md:col-span-5">
+          <div class="card-tilt-l bg-white rounded-3xl p-6 border border-warm-200 warm-shadow relative overflow-hidden">
+            <div class="absolute top-0 right-0 bg-brand-200 text-brand-700 text-sm font-bold px-4 py-1.5 rounded-bl-2xl">
+              雙寶媽
+            </div>
+
+            <div class="w-24 h-24 blob bg-gradient-to-br from-brand-100 to-brand-200 text-brand-700 flex items-center justify-center font-bold text-3xl mb-5">
+              Ruby
+            </div>
+
+            <h3 class="text-2xl font-bold text-brand-700">Ruby Lin</h3>
+            <p class="text-xs text-[#161d26] mb-4">前電子業 PM，現在專心幫家庭看保單</p>
+
+            <div class="space-y-2.5 text-sm text-[#161d26] border-t border-dashed border-warm-300 pt-4">
+              <div class="flex items-start gap-2">
+                <svg class="w-5 h-5 text-brand-500 shrink-0 sketch"><use href="#i-heart"/></svg>
+                <span>兩個小孩的媽，奶粉尿布錢我也在算</span>
+              </div>
+              <div class="flex items-start gap-2">
+                <svg class="w-5 h-5 text-brand-500 shrink-0 sketch"><use href="#i-clipboard"/></svg>
+                <span>當過電子業 PM，很懂得「先做什麼、後做什麼」</span>
+              </div>
+              <div class="flex items-start gap-2">
+                <svg class="w-5 h-5 text-brand-500 shrink-0 sketch"><use href="#i-home"/></svg>
+                <span>待過安親班、輔具公司，看過很多家庭突然出狀況</span>
+              </div>
+            </div>
+
+            <div class="mt-6 pt-4 border-t border-warm-200 bg-warm-100 -mx-6 -mb-6 p-4 text-base text-brand-600 text-center">
+              「我不是來背話術的，<br>
+              我跟你一樣，每天也在跟小孩搏鬥。」
+            </div>
+          </div>
+        </div>
+
+        <!-- 右：故事 -->
+        <div class="md:col-span-7 space-y-4">
+          <span class="inline-block px-3 py-1 rounded-lg bg-brand-500 text-white text-sm">我的故事</span>
+          <h2 class="text-3xl md:text-4xl font-bold text-brand-700 leading-tight tracking-tight">
+            工作換了好幾種，<br>
+            最後發現最想幫的，還是跟我一樣的家庭。
+          </h2>
+
+          <p class="text-[#161d26] text-sm sm:text-base leading-relaxed">
+            年輕時去澳洲打工度假，在餐廳洗碗、站收銀，知道賺每一塊錢有多不容易。後來在輔具公司上班，看到很多家庭一個長輩倒下，全家生活都跟著變了。在安親班的時候，小朋友跌倒、突然發燒，都是家常便飯。
+          </p>
+
+          <p class="text-[#161d26] text-sm sm:text-base leading-relaxed">
+            後來進電子業當 PM，每天在做的就是：預算就這麼多，哪件事最重要先做。
+          </p>
+
+          <div class="relative bg-warm-100 border-2 border-dashed border-warm-300 p-5 rounded-2xl my-4 text-sm sm:text-base text-[#161d26] leading-relaxed">
+            <svg class="absolute -top-4 -left-3 w-9 h-9 text-brand-500 bg-sea-50 rounded-full p-1 sketch"><use href="#i-sun"/></svg>
+            <strong class="text-lg text-brand-600">我覺得買保險跟排家裡的預算很像：</strong><br>
+            不是越多越好，是先把最重要的顧好。錢要花在刀口上，萬一真的有什麼事，家裡的日子還過得下去。
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- 對比區 (Comparison) -->
+    <section id="comparison" class="py-14 md:py-24 bg-sea-100 border-y border-sea-200">
+      <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center max-w-2xl mx-auto mb-12">
+          <span class="inline-block px-3 py-1 rounded-lg bg-brand-500 text-white text-sm">先說清楚</span>
+          <h2 class="text-3xl md:text-4xl font-bold text-brand-700 mt-3 tracking-tight text-[#161d26]">我跟一般業務，差在哪？</h2>
+          <p class="text-[#161d26] text-sm sm:text-base mt-3">聊之前，你可以先看看這張表：</p>
+        </div>
+
+        <div class="overflow-x-auto bg-white rounded-2xl border border-warm-200 warm-shadow">
+          <table class="w-full text-left border-collapse min-w-[580px]">
+            <thead>
+              <tr class="border-b-2 border-warm-200 text-sm">
+                <th class="py-4 px-5 w-1/4 text-[#161d26]">項目</th>
+                <th class="py-4 px-5 w-3/8 text-[#161d26] bg-stone-50">常遇到的業務</th>
+                <th class="py-4 px-5 w-3/8 text-lg text-brand-600 bg-brand-50">
+                  <span class="inline-flex items-center gap-1.5"><svg class="w-5 h-5 sketch"><use href="#i-sun"/></svg>Ruby 的做法</span>
+                </th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-dashed divide-warm-200 text-sm text-[#161d26]">
+              <tr>
+                <td class="py-4 px-5 font-bold text-[#161d26]">推銷方式</td>
+                <td class="py-4 px-5 bg-stone-50 text-[#161d26]">一直推佣金高的、追著問，還用「快停賣了」嚇你。</td>
+                <td class="py-4 px-5 bg-brand-50/60 text-[#161d26]">
+                  <strong>不推銷</strong>：只幫你看缺什麼、多什麼，要不要買你自己決定。
+                </td>
+              </tr>
+              <tr>
+                <td class="py-4 px-5 font-bold text-[#161d26]">解釋條款</td>
+                <td class="py-4 px-5 bg-stone-50 text-[#161d26]">一堆專有名詞，聽完還是霧煞煞。</td>
+                <td class="py-4 px-5 bg-brand-50/60 text-[#161d26]">
+                  <strong>講人話</strong>：用「小孩半夜發燒掛急診」這種例子講給你聽。
+                </td>
+              </tr>
+              <tr>
+                <td class="py-4 px-5 font-bold text-[#161d26]">預算</td>
+                <td class="py-4 px-5 bg-stone-50 text-[#161d26]">叫你「再擠一點」，擠到生活很緊。</td>
+                <td class="py-4 px-5 bg-brand-50/60 text-[#161d26]">
+                  <strong>不影響生活</strong>：先找出重複繳的冤枉錢，能省就省。
+                </td>
+              </tr>
+              <tr>
+                <td class="py-4 px-5 font-bold text-[#161d26]">聊完之後</td>
+                <td class="py-4 px-5 bg-stone-50 text-[#161d26]">直接拿一疊建議書，叫你當場簽。</td>
+                <td class="py-4 px-5 bg-brand-50/60 text-[#161d26]">
+                  <strong>一份整理表</strong>：哪裡重複、哪裡缺都寫清楚，一目了然。
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- 互動小測驗 (Interactive Tool) -->
+    <section id="calculator" class="py-14 md:py-24 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="bg-white rounded-3xl p-6 sm:p-10 border border-warm-200 warm-shadow">
+
+        <div class="text-center max-w-lg mx-auto mb-8">
+          <span class="inline-block px-3 py-1 rounded-lg bg-brand-500 text-white text-sm">3 分鐘小測驗</span>
+          <h2 class="text-3xl md:text-4xl font-bold text-brand-700 mt-3 tracking-tight">你家現在最該先顧哪一塊？</h2>
+          <p class="text-[#161d26] text-sm mt-3">點一點你家的狀況，馬上給你一個方向參考：</p>
+        </div>
+
+        <div class="space-y-6">
+          <!-- Step 1 -->
+          <div>
+            <label class="block text-base font-bold text-brand-700 mb-2">1. 你家現在是？</label>
+            <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
+              <button type="button" class="tool-status-btn py-2.5 px-3 rounded-lg border text-sm transition-all text-center hover:bg-warm-50 border-brand-500 bg-brand-50 text-brand-700 font-bold" data-stage="single">還是單身</button>
+              <button type="button" class="tool-status-btn py-2.5 px-3 rounded-lg border text-sm transition-all text-center hover:bg-warm-50 border-warm-200 text-ink" data-stage="couple">兩人世界 / 剛結婚</button>
+              <button type="button" class="tool-status-btn py-2.5 px-3 rounded-lg border text-sm transition-all text-center hover:bg-warm-50 border-warm-200 text-ink" data-stage="baby">有小小孩了</button>
+              <button type="button" class="tool-status-btn py-2.5 px-3 rounded-lg border text-sm transition-all text-center hover:bg-warm-50 border-warm-200 text-ink" data-stage="sandwich">兩個小孩 / 跟長輩住</button>
+            </div>
+          </div>
+
+          <!-- Step 2 -->
+          <div>
+            <label class="block text-base font-bold text-brand-700 mb-2">2. 一年保費大概能出多少（不影響生活的那種）？</label>
+            <div class="grid grid-cols-3 gap-2.5">
+              <button type="button" class="tool-budget-btn py-2.5 px-3 rounded-lg border text-sm transition-all text-center hover:bg-warm-50 border-warm-200 text-ink" data-budget="tight">3 萬以內（很省）</button>
+              <button type="button" class="tool-budget-btn py-2.5 px-3 rounded-lg border text-sm transition-all text-center hover:bg-warm-50 border-brand-500 bg-brand-50 text-brand-700 font-bold" data-budget="medium">3～6 萬（一般）</button>
+              <button type="button" class="tool-budget-btn py-2.5 px-3 rounded-lg border text-sm transition-all text-center hover:bg-warm-50 border-warm-200 text-ink" data-budget="comfort">6 萬以上（比較寬裕）</button>
+            </div>
+          </div>
+
+          <!-- Step 3 -->
+          <div>
+            <label class="block text-base font-bold text-brand-700 mb-2">3. 你最擔心的是？</label>
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
+              <button type="button" class="tool-worry-btn py-2.5 px-4 rounded-lg border text-sm transition-all text-left hover:bg-warm-50 border-warm-200 text-ink flex items-center gap-2" data-worry="redundant">
+                <svg class="w-5 h-5 shrink-0 text-brand-500 sketch"><use href="#i-doc"/></svg>保單一堆，怕買貴又重複
+              </button>
+              <button type="button" class="tool-worry-btn py-2.5 px-4 rounded-lg border text-sm transition-all text-left hover:bg-warm-50 border-brand-500 bg-brand-50 text-brand-700 font-bold flex items-center gap-2" data-worry="pillar">
+                <svg class="w-5 h-5 shrink-0 text-brand-500 sketch"><use href="#i-shield"/></svg>怕家裡賺錢的那個倒下
+              </button>
+              <button type="button" class="tool-worry-btn py-2.5 px-4 rounded-lg border text-sm transition-all text-left hover:bg-warm-50 border-warm-200 text-ink flex items-center gap-2" data-worry="medical">
+                <svg class="w-5 h-5 shrink-0 text-brand-500 sketch"><use href="#i-medical"/></svg>怕生病要自費、付不起
+              </button>
+            </div>
+          </div>
+
+          <!-- 結果 -->
+          <div id="calculatorResult" class="mt-6 p-5 rounded-2xl bg-gradient-to-br from-warm-100 to-brand-50 border-2 border-dashed border-warm-300 text-ink transition-all">
+            <div class="flex items-center justify-between gap-3 pb-3 border-b border-dashed border-warm-300">
+              <div class="flex items-center gap-2">
+                <svg class="w-6 h-6 shrink-0 text-brand-500 sketch"><use href="#i-sun"/></svg>
+                <span class="font-bold text-lg text-brand-700" id="resultHeadline"></span>
+              </div>
+              <span class="text-xs bg-white text-brand-600 px-2.5 py-1 rounded-full border border-warm-200 shrink-0">參考看看</span>
+            </div>
+
+            <p class="text-sm text-ink mt-3 leading-relaxed" id="resultDesc"></p>
+
+            <div class="mt-4 pt-3 border-t border-dashed border-warm-300 flex flex-col sm:flex-row items-center justify-between gap-3">
+              <span class="text-sm text-[#161d26]">想知道自己家的保單有沒有這個問題？</span>
+              <button type="button" onclick="copyToolResultToBooking()" class="text-sm bg-brand-500 hover:bg-brand-600 text-white font-medium px-4 py-2 rounded-lg transition-all w-full sm:w-auto text-center inline-flex items-center justify-center gap-1.5">
+                帶著這個結果來約我聊 <svg class="w-4 h-4 sketch"><use href="#i-arrow"/></svg>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 三步驟流程 (Process) -->
+    <section id="process" class="py-14 md:py-24 bg-sea-100 border-y border-sea-200">
+      <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center max-w-2xl mx-auto mb-14">
+          <span class="inline-block px-3 py-1 rounded-lg bg-brand-500 text-white text-sm">很簡單</span>
+          <h2 class="text-3xl md:text-4xl font-bold text-brand-700 mt-3 tracking-tight">30 分鐘要聊什麼？</h2>
+          <p class="text-[#161d26] text-sm sm:text-base mt-3">全部線上，不用出門，也不會逼你買。</p>
+        </div>
+
+        <div class="grid md:grid-cols-3 gap-8">
+          <div class="card-tilt-l bg-white rounded-2xl p-6 border border-warm-200 warm-shadow relative transition-all duration-300">
+            <div class="flex items-center gap-3 mb-4">
+              <div class="w-12 h-12 blob bg-brand-500 text-white font-bold text-xl flex items-center justify-center">1</div>
+              <svg class="w-8 h-8 text-brand-500 sketch"><use href="#i-camera"/></svg>
+            </div>
+            <h3 class="text-xl font-bold text-brand-700 mb-2">拍保單給我（個資可以遮）</h3>
+            <p class="text-sm text-[#161d26] leading-relaxed">
+              把保單第一頁或投保清單拍下來，身分證字號、地址遮掉沒關係。我會先幫你整理成一張表。
+            </p>
+          </div>
+
+          <div class="card-tilt-r bg-white rounded-2xl p-6 border border-warm-200 warm-shadow relative transition-all duration-300">
+            <div class="flex items-center gap-3 mb-4">
+              <div class="w-12 h-12 blob-2 bg-brand-500 text-white font-bold text-xl flex items-center justify-center">2</div>
+              <svg class="w-8 h-8 text-brand-500 sketch"><use href="#i-video"/></svg>
+            </div>
+            <h3 class="text-xl font-bold text-brand-700 mb-2">線上聊 30 分鐘</h3>
+            <p class="text-sm text-[#161d26] leading-relaxed">
+              不講專有名詞，就聊家裡的事：房貸還剩多少？幼兒園一個月多少？萬一明天出事，家裡需要多少錢撐下去？
+            </p>
+          </div>
+
+          <div class="card-tilt-l bg-white rounded-2xl p-6 border border-warm-200 warm-shadow relative transition-all duration-300">
+            <div class="flex items-center gap-3 mb-4">
+              <div class="w-12 h-12 blob bg-brand-500 text-white font-bold text-xl flex items-center justify-center">3</div>
+              <svg class="w-8 h-8 text-brand-500 sketch"><use href="#i-clipboard"/></svg>
+            </div>
+            <h3 class="text-xl font-bold text-brand-700 mb-2">給你一張整理表</h3>
+            <p class="text-sm text-[#161d26] leading-relaxed">
+              一頁寫清楚哪裡重複、哪裡不夠。拿去找原本的業務調整也可以，不一定要跟我買。
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 朋友的例子 (Cases) -->
+    <section id="cases" class="py-14 md:py-24 max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center max-w-2xl mx-auto mb-12">
+        <span class="inline-block px-3 py-1 rounded-lg bg-brand-500 text-white text-sm">朋友的例子</span>
+        <h2 class="text-3xl md:text-4xl font-bold text-brand-700 mt-3 tracking-tight">聊完之後，他們鬆了一口氣</h2>
+        <p class="text-[#161d26] text-sm sm:text-base mt-3">名字都拿掉了，但故事是真的。</p>
+      </div>
+
+      <div class="grid md:grid-cols-2 gap-6">
+        <div class="card-tilt-l bg-white rounded-2xl p-6 border border-warm-200 warm-shadow flex flex-col justify-between transition-all duration-300">
+          <div>
+            <div class="flex flex-wrap items-center gap-2 mb-3">
+              <span class="px-2.5 py-1 rounded-lg bg-brand-200 text-brand-700 text-xs font-medium inline-flex items-center gap-1"><svg class="w-3.5 h-3.5 sketch"><use href="#i-pin"/></svg>新北雙薪 ‧ 兩個小孩</span>
+              <span class="text-xs text-[#161d26]">一年省 1.8 萬</span>
+            </div>
+            <h3 class="text-xl font-bold text-brand-700 mb-2">「原來我們每年多繳了快兩萬的重複意外險」</h3>
+            <p class="text-sm text-[#161d26] leading-relaxed">
+              生完二寶開銷變超大，夫妻本來想把醫療險停掉省錢。一看才發現，先生公司團保、信用卡、舊保單，意外險重複買了三份，但癌症標靶藥這種最貴的反而完全沒保到。把不需要的附約整理掉，醫療補好，一年還多出快兩萬塊奶粉錢。
+            </p>
+          </div>
+          <div class="mt-4 pt-3 border-t border-dashed border-warm-300 text-sm text-brand-600 flex items-center gap-2">
+            <svg class="w-5 h-5 shrink-0 sketch"><use href="#i-check"/></svg>
+            <span>結果：保費少了 15%，保障反而多了一倍</span>
+          </div>
+        </div>
+
+        <div class="card-tilt-r bg-white rounded-2xl p-6 border border-warm-200 warm-shadow flex flex-col justify-between transition-all duration-300">
+          <div>
+            <div class="flex flex-wrap items-center gap-2 mb-3">
+              <span class="px-2.5 py-1 rounded-lg bg-brand-100 text-brand-700 text-xs font-medium inline-flex items-center gap-1"><svg class="w-3.5 h-3.5 sketch"><use href="#i-pin"/></svg>桃園新手媽媽 ‧ 剛生完 3 個月</span>
+              <span class="text-xs text-[#161d26]">不再糾結了</span>
+            </div>
+            <h3 class="text-xl font-bold text-brand-700 mb-2">「第一次遇到先問我家菜錢、不急著叫我簽約的業務」</h3>
+            <p class="text-sm text-[#161d26] leading-relaxed">
+              在月子中心被推了一張一年四萬多的寶寶保單，心裡很不安又不好意思拒絕。我們一起算了一下：家裡主要是先生在賺，真正要擔心的是先生能不能好好工作。所以先花 1.5 萬把寶寶的基本醫療買好，剩下的錢拿去補先生的保障。
+            </p>
+          </div>
+          <div class="mt-4 pt-3 border-t border-dashed border-warm-300 text-sm text-brand-600 flex items-center gap-2">
+            <svg class="w-5 h-5 shrink-0 sketch"><use href="#i-check"/></svg>
+            <span>結果：寶寶保費從 4 萬多降到 1.5 萬，先生也保到了</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 預約表單 (Booking Form) - 已替換為 Google Form 自適應容器 -->
+    <section id="booking" class="py-14 md:py-24 bg-gradient-to-b from-sea-100 to-sea-50 border-t border-sea-200">
+      <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="bg-white rounded-3xl p-4 sm:p-8 md:p-10 border border-warm-200 warm-shadow">
+
+          <div class="text-center max-w-lg mx-auto mb-6 sm:mb-8">
+            <span class="inline-block px-3 py-1 rounded-lg bg-brand-500 text-white text-sm">不推銷，真的</span>
+            <h2 class="text-3xl md:text-4xl font-bold text-brand-700 mt-3 tracking-tight">給自己 30 分鐘，把家裡的保單看清楚</h2>
+            <p class="text-[#161d26] text-sm mt-3">
+              填完之後，我 24 小時內用 LINE 跟你約時間。不會奪命連環 call，也不會硬推。
+            </p>
+          </div>
+
+          <!-- Google Form 嵌入區塊（RWD 防破版與無衝突容器） -->
+          <div class="w-full overflow-hidden rounded-2xl bg-white">
+            <!-- 
+              提示：請將下方 src 替換為你的 Google 表單嵌入網址：
+              格式為：https://docs.google.com/forms/d/e/【你的表單ID】/viewform?embedded=true
+            -->
+            <iframe
+              id="googleBookingForm"
+              src="https://forms.gle/zWyZ1UcHhxNxNyLm8"
+              class="w-full min-h-[760px] sm:min-h-[820px] border-0"
+              frameborder="0"
+              marginheight="0"
+              marginwidth="0">
+              表單載入中，請稍候…
+            </iframe>
+          </div>
+
+          <!-- 備援外連與隱私提示 -->
+          <div class="mt-4 pt-4 border-t border-dashed border-warm-200 text-center space-y-2">
+            <p class="text-xs text-[#8a6552]">
+              若表單載入較慢或在特定瀏覽器無法送出，請
+              <a href="https://forms.gle/zWyZ1UcHhxNxNyLm8" target="_blank" rel="noopener noreferrer" class="text-brand-600 underline font-medium hover:text-brand-700">
+                點此開啟 Google 表單填寫 ↗
+              </a>
+            </p>
+            <p class="text-center text-xs text-[#161d26] flex items-center justify-center gap-1.5">
+              <svg class="w-4 h-4 shrink-0 text-brand-500 sketch"><use href="#i-lock"/></svg>
+              你的資料只用來約時間，不會拿去給別人，也不會亂傳廣告給你。
+            </p>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- FAQ -->
+    <section class="py-14 md:py-24 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center max-w-xl mx-auto mb-10">
+        <span class="inline-block px-3 py-1 rounded-lg bg-brand-500 text-white text-sm">大家常問</span>
+        <h2 class="text-3xl md:text-4xl font-bold text-brand-700 mt-3 tracking-tight">你可能會想問的</h2>
+      </div>
+
+      <div class="space-y-4">
+        <div class="bg-white rounded-2xl p-5 border border-warm-200 warm-shadow flex gap-3">
+          <svg class="w-6 h-6 shrink-0 text-brand-500 mt-0.5 sketch"><use href="#i-question"/></svg>
+          <div>
+            <h3 class="text-lg font-bold text-brand-700 mb-1">聊到最後，真的不會叫我買嗎？</h3>
+            <p class="text-sm text-[#161d26] leading-relaxed">
+              真的不會啦！這 30 分鐘就是幫你把抽屜那疊保單整理成一張看得懂的表。看完要回原本的保險公司調整、還是先放著，都你自己決定。
+            </p>
+          </div>
+        </div>
+
+        <div class="bg-white rounded-2xl p-5 border border-warm-200 warm-shadow flex gap-3">
+          <svg class="w-6 h-6 shrink-0 text-brand-500 mt-0.5 sketch"><use href="#i-question"/></svg>
+          <div>
+            <h3 class="text-lg font-bold text-brand-700 mb-1">我住中南部或花東，也可以約嗎？</h3>
+            <p class="text-sm text-[#161d26] leading-relaxed">
+              可以喔！大部分都是用 LINE 或 Google Meet 視訊，不用出門、家裡亂也沒差，等小孩睡了花半小時就好。
+            </p>
+          </div>
+        </div>
+
+        <div class="bg-white rounded-2xl p-5 border border-warm-200 warm-shadow flex gap-3">
+          <svg class="w-6 h-6 shrink-0 text-brand-500 mt-0.5 sketch"><use href="#i-question"/></svg>
+          <div>
+            <h3 class="text-lg font-bold text-brand-700 mb-1">我的保單是跟親戚朋友買的，找妳看會不會很尷尬？</h3>
+            <p class="text-sm text-[#161d26] leading-relaxed">
+              不會啦～我不會說誰對誰錯，只看這些保單適不適合你家「現在」的狀況。很多時候只是附約過期、或少了新的自費項目，整理好之後，你也可以請原本的親友幫你調。
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 頁尾 (Footer) -->
+    <footer class="bg-[#A8D5D5] text-brand-700 py-12 pb-24 sm:pb-12 text-sm">
+      <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex flex-col md:flex-row justify-between items-center gap-6 text-center md:text-left">
+          <div>
+            <div class="flex items-center justify-center md:justify-start gap-2 text-brand-700 mb-1">
+              <svg class="w-6 h-6 text-brand-700 sketch"><use href="#i-home"/></svg>
+              <span class="font-bold text-xl">The Assurance Hub</span>
+              <span class="text-sm font-medium text-brand-700/75 self-end pb-0.5">by Ruby</span>
+            </div>
+            <p class="text-brand-700/85">幫忙把保單看懂，讓家裡的日子過得安心一點。</p>
+          </div>
+          <div class="flex items-center gap-4 text-brand-700 font-medium">
+            <a href="#booking" class="hover:underline underline-offset-4 decoration-2">約時間</a>
+            <span class="text-brand-700/50">•</span>
+            <a href="#calculator" class="hover:underline underline-offset-4 decoration-2">小測驗</a>
+            <span class="text-brand-700/50">•</span>
+            <a href="#about" class="hover:underline underline-offset-4 decoration-2">關於 Ruby</a>
+          </div>
+        </div>
+        <div class="mt-8 pt-8 border-t border-dashed border-brand-700/25 text-center text-xs text-brand-700/75">
+          &copy; 2026 Ruby Lin. 實際保障內容還是以各保險公司的條款為準喔。
+        </div>
+      </div>
+    </footer>
+
+    <!-- 手機版底部固定按鈕 -->
+    <div class="sm:hidden fixed bottom-0 left-0 right-0 z-40 bg-sea-50/95 backdrop-blur-md border-t border-sea-200 px-4 py-2.5 flex items-center justify-between gap-3">
+      <div class="text-xs">
+        <span class="font-bold text-base text-brand-700 block leading-tight">保障盤點</span>
+        <span class="text-[#161d26] text-[11px]">30 分鐘 ‧ 不推銷</span>
+      </div>
+      <a href="#booking" class="bg-brand-500 hover:bg-brand-600 text-white font-medium text-sm px-5 py-2.5 rounded-lg warm-shadow transition-all">
+        約時間
+      </a>
+    </div>
+
+    <!-- 送出後的提示 (Toast) -->
+    <div id="customToast" class="fixed top-6 right-6 z-50 transform translate-y-[-150%] opacity-0 transition-all duration-300 pointer-events-none max-w-sm">
+      <div class="bg-white rounded-2xl p-4 warm-shadow border border-warm-200 flex items-start gap-3">
+        <div id="toastIcon" class="w-9 h-9 blob bg-brand-100 text-brand-700 flex items-center justify-center shrink-0">
+          <svg class="w-5 h-5 sketch"><use href="#i-heart"/></svg>
+        </div>
+        <div>
+          <h4 id="toastTitle" class="text-base font-bold text-brand-700">收到囉！</h4>
+          <p id="toastMessage" class="text-xs text-[#161d26] mt-0.5">我 24 小時內會跟你聯絡，謝謝你～</p>
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+  <script>
+    // 選取狀態的樣式
+    const activeClass = ['border-brand-500', 'bg-brand-50', 'text-brand-700', 'font-bold'];
+    const inactiveClass = ['border-warm-200', 'text-ink'];
+
+    // 1. 手機漢堡選單切換
+    const mobileBtn = document.getElementById('mobileMenuBtn');
+    const mobileMenu = document.getElementById('mobileMenu');
+    if (mobileBtn && mobileMenu) {
+      mobileBtn.addEventListener('click', () => {
+        mobileMenu.classList.toggle('hidden');
+      });
+
+      document.querySelectorAll('.mobile-nav-link').forEach(link => {
+        link.addEventListener('click', () => {
+          mobileMenu.classList.add('hidden');
+        });
+      });
+    }
+
+    // 2. 小測驗狀態切換
+    let toolState = {
+      stage: 'single',
+      budget: 'medium',
+      worry: 'pillar'
+    };
+
+    function updateToolUI() {
+      const headline = document.getElementById('resultHeadline');
+      const desc = document.getElementById('resultDesc');
+      if (!headline || !desc) return;
+
+      if (toolState.stage === 'baby' || toolState.stage === 'sandwich') {
+        if (toolState.budget === 'tight') {
+          headline.innerText = "建議先顧：大人先保好，小孩買便宜實用的";
+          desc.innerText = "錢不多的時候先不要碰終身險啦！先用定期險把爸媽的保障拉高，小孩一年幾千塊的醫療實支、意外險就很夠，剩下的錢留著付托嬰費。";
+        } else {
+          headline.innerText = "建議先顧：賺錢的人保足，小孩醫療補完整";
+          desc.innerText = "先算算房貸還剩多少、小孩還要養幾年，把爸媽的額度抓出來。癌症、重大傷病這種自費很貴的也一起補齊，不要一個人生病整個家都垮。";
+        }
+      } else if (toolState.stage === 'single') {
+        headline.innerText = "建議先顧：自己生病時不要變成爸媽的負擔";
+        desc.innerText = "單身還沒有要養小孩，壽險不用買很高。重點是萬一自己生病倒下，醫療、手術的自費能自己扛，不要讓爸媽操心。";
+      } else {
+        headline.innerText = "建議先顧：兩個人保得差不多，幫未來的小孩留點錢";
+        desc.innerText = "先把兩個人的房貸、車貸攤開來看，確保其中一個人停工兩三年，家裡還撐得住。舊保單裡繳很多、保很少的可以先整理掉，留點錢給之後的小孩。";
+      }
+    }
+
+    function setupToggleGroup(selector, stateKey) {
+      const buttons = document.querySelectorAll(selector);
+      buttons.forEach(btn => {
+        btn.addEventListener('click', () => {
+          buttons.forEach(b => {
+            b.classList.remove(...activeClass);
+            b.classList.add(...inactiveClass);
+          });
+          btn.classList.remove(...inactiveClass);
+          btn.classList.add(...activeClass);
+
+          toolState[stateKey] = btn.getAttribute(`data-${stateKey}`);
+          updateToolUI();
+        });
+      });
+    }
+
+    setupToggleGroup('.tool-status-btn', 'stage');
+    setupToggleGroup('.tool-budget-btn', 'budget');
+    setupToggleGroup('.tool-worry-btn', 'worry');
+    updateToolUI();
+
+    // 提示通知 Toast 函式
+    const toast = document.getElementById('customToast');
+    const toastTitle = document.getElementById('toastTitle');
+    const toastMessage = document.getElementById('toastMessage');
+
+    function showToast(title, message) {
+      if (!toast || !toastTitle || !toastMessage) return;
+      toastTitle.innerText = title;
+      toastMessage.innerText = message;
+      toast.classList.remove('translate-y-[-150%]', 'opacity-0');
+      toast.classList.add('translate-y-0', 'opacity-100');
+
+      setTimeout(() => {
+        toast.classList.remove('translate-y-0', 'opacity-100');
+        toast.classList.add('translate-y-[-150%]', 'opacity-0');
+      }, 4500);
+    }
+
+    // 3. 把小測驗結果帶到預約區塊（自動複製到剪貼簿並滑動）
+    function copyToolResultToBooking() {
+      const stageBtn = document.querySelector(`.tool-status-btn[data-stage="${toolState.stage}"]`);
+      const budgetBtn = document.querySelector(`.tool-budget-btn[data-budget="${toolState.budget}"]`);
+      const stageText = stageBtn ? stageBtn.innerText.trim() : '';
+      const budgetText = budgetBtn ? budgetBtn.innerText.trim() : '';
+      const summaryText = `【小測驗結果】現況：${stageText}｜預算：${budgetText}`;
+
+      if (navigator.clipboard) {
+        navigator.clipboard.writeText(summaryText).then(() => {
+          showToast('已複製測驗結果！', '已複製到剪貼簿，可直接貼在表單的備註中～');
+        }).catch(() => {
+          showToast('準備好囉！', '請在表單中留下聯絡方式，Ruby 會儘速聯繫你！');
+        });
+      }
+
+      const bookingSection = document.getElementById('booking');
+      if (bookingSection) {
+        bookingSection.scrollIntoView({ behavior: 'smooth' });
+      }
+    }
+  </script>
+</body>
+</html>
