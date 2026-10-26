@@ -510,69 +510,87 @@
       <div class="bg-white rounded-3xl p-6 sm:p-10 border border-warm-200 warm-shadow">
 
         <div class="text-center max-w-lg mx-auto mb-8">
-          <span class="inline-block px-3 py-1 rounded-lg bg-brand-500 text-white text-sm">3 分鐘小測驗</span>
-          <h2 class="text-3xl md:text-4xl font-bold text-brand-700 mt-3 tracking-tight">你家現在最該先顧哪一塊？</h2>
-          <p class="text-[#161d26] text-sm mt-3">點一點你家的狀況，馬上給你一個方向參考：</p>
+          <span class="inline-block px-3 py-1 rounded-lg bg-brand-500 text-white text-sm">3 分鐘家庭保障小測驗</span>
+          <h2 class="text-3xl md:text-4xl font-bold text-brand-700 mt-3 tracking-tight">測測你家目前的防護重心在哪裡？</h2>
+          <p class="text-[#161d26] text-sm sm:text-base mt-3">簡單點選家庭現況，即刻為你產出 PM 風險優先順序建議：</p>
         </div>
 
+        <!-- Tool Container -->
         <div class="space-y-6">
-          <!-- Step 1 -->
+
+          <!-- Step 1: Family Status -->
           <div>
-            <label class="block text-base font-bold text-brand-700 mb-2">1. 你家現在是？</label>
+            <label class="block text-base font-bold text-brand-700 mb-2">1. 目前的家庭階段</label>
             <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
-              <button type="button" class="tool-status-btn py-2.5 px-3 rounded-lg border text-sm transition-all text-center hover:bg-warm-50 border-brand-500 bg-brand-50 text-brand-700 font-bold" data-stage="single">還是單身</button>
-              <button type="button" class="tool-status-btn py-2.5 px-3 rounded-lg border text-sm transition-all text-center hover:bg-warm-50 border-warm-200 text-ink" data-stage="couple">兩人世界 / 剛結婚</button>
-              <button type="button" class="tool-status-btn py-2.5 px-3 rounded-lg border text-sm transition-all text-center hover:bg-warm-50 border-warm-200 text-ink" data-stage="baby">有小小孩了</button>
-              <button type="button" class="tool-status-btn py-2.5 px-3 rounded-lg border text-sm transition-all text-center hover:bg-warm-50 border-warm-200 text-ink" data-stage="sandwich">兩個小孩 / 跟長輩住</button>
+              <button type="button" class="tool-status-btn py-2.5 px-3 rounded-lg border text-sm transition-all text-center hover:bg-sea-50 border-brand-500 bg-brand-50 text-brand-700 font-bold" data-stage="single">
+                單身自立族
+              </button>
+              <button type="button" class="tool-status-btn py-2.5 px-3 rounded-lg border text-sm transition-all text-center hover:bg-sea-50 border-sea-200 text-[#161d26]" data-stage="couple">
+                頂客 / 新婚夫妻
+              </button>
+              <button type="button" class="tool-status-btn py-2.5 px-3 rounded-lg border text-sm transition-all text-center hover:bg-sea-50 border-sea-200 text-[#161d26]" data-stage="baby">
+                新手爸媽 (幼童)
+              </button>
+              <button type="button" class="tool-status-btn py-2.5 px-3 rounded-lg border text-sm transition-all text-center hover:bg-sea-50 border-sea-200 text-[#161d26]" data-stage="sandwich">
+                雙寶 / 三代同堂
+              </button>
             </div>
           </div>
 
-          <!-- Step 2 -->
+          <!-- Step 2: Budget Constraints -->
           <div>
-            <label class="block text-base font-bold text-brand-700 mb-2">2. 一年保費大概能出多少（不影響生活的那種）？</label>
+            <label class="block text-base font-bold text-brand-700 mb-2">2. 全家每年可輕鬆負擔的保費上限（不影響生活）</label>
             <div class="grid grid-cols-3 gap-2.5">
-              <button type="button" class="tool-budget-btn py-2.5 px-3 rounded-lg border text-sm transition-all text-center hover:bg-warm-50 border-warm-200 text-ink" data-budget="tight">3 萬以內（很省）</button>
-              <button type="button" class="tool-budget-btn py-2.5 px-3 rounded-lg border text-sm transition-all text-center hover:bg-warm-50 border-brand-500 bg-brand-50 text-brand-700 font-bold" data-budget="medium">3～6 萬（一般）</button>
-              <button type="button" class="tool-budget-btn py-2.5 px-3 rounded-lg border text-sm transition-all text-center hover:bg-warm-50 border-warm-200 text-ink" data-budget="comfort">6 萬以上（比較寬裕）</button>
+              <button type="button" class="tool-budget-btn py-2.5 px-2 sm:px-3 rounded-lg border text-sm transition-all text-center hover:bg-sea-50 border-sea-200 text-[#161d26]" data-budget="tight">
+                <span class="block">3 萬以內</span><span class="block text-xs opacity-80">緊湊極簡</span>
+              </button>
+              <button type="button" class="tool-budget-btn py-2.5 px-2 sm:px-3 rounded-lg border text-sm transition-all text-center hover:bg-sea-50 border-brand-500 bg-brand-50 text-brand-700 font-bold" data-budget="medium">
+                <span class="block">3 ~ 6 萬</span><span class="block text-xs opacity-80">標準務實</span>
+              </button>
+              <button type="button" class="tool-budget-btn py-2.5 px-2 sm:px-3 rounded-lg border text-sm transition-all text-center hover:bg-sea-50 border-sea-200 text-[#161d26]" data-budget="comfort">
+                <span class="block">6 萬以上</span><span class="block text-xs opacity-80">全面升級</span>
+              </button>
             </div>
           </div>
 
-          <!-- Step 3 -->
+          <!-- Step 3: Current Worry / Pain -->
           <div>
-            <label class="block text-base font-bold text-brand-700 mb-2">3. 你最擔心的是？</label>
+            <label class="block text-base font-bold text-brand-700 mb-2">3. 目前心中最掛心的痛點</label>
             <div class="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
-              <button type="button" class="tool-worry-btn py-2.5 px-4 rounded-lg border text-sm transition-all text-left hover:bg-warm-50 border-warm-200 text-ink flex items-center gap-2" data-worry="redundant">
-                <svg class="w-5 h-5 shrink-0 text-brand-500 sketch"><use href="#i-doc"/></svg>保單一堆，怕買貴又重複
+              <button type="button" class="tool-worry-btn py-2.5 px-4 rounded-lg border text-sm transition-all text-left hover:bg-sea-50 border-sea-200 text-[#161d26] flex items-center gap-2" data-worry="redundant">
+                <svg class="w-5 h-5 shrink-0 text-brand-500 sketch"><use href="#i-doc"/></svg>保單很多，怕買貴又重複
               </button>
-              <button type="button" class="tool-worry-btn py-2.5 px-4 rounded-lg border text-sm transition-all text-left hover:bg-warm-50 border-brand-500 bg-brand-50 text-brand-700 font-bold flex items-center gap-2" data-worry="pillar">
-                <svg class="w-5 h-5 shrink-0 text-brand-500 sketch"><use href="#i-shield"/></svg>怕家裡賺錢的那個倒下
+              <button type="button" class="tool-worry-btn py-2.5 px-4 rounded-lg border text-sm transition-all text-left hover:bg-sea-50 border-brand-500 bg-brand-50 text-brand-700 font-bold flex items-center gap-2" data-worry="pillar">
+                <svg class="w-5 h-5 shrink-0 text-brand-500 sketch"><use href="#i-shield"/></svg>怕主要賺錢者倒下拖垮家
               </button>
-              <button type="button" class="tool-worry-btn py-2.5 px-4 rounded-lg border text-sm transition-all text-left hover:bg-warm-50 border-warm-200 text-ink flex items-center gap-2" data-worry="medical">
-                <svg class="w-5 h-5 shrink-0 text-brand-500 sketch"><use href="#i-medical"/></svg>怕生病要自費、付不起
+              <button type="button" class="tool-worry-btn py-2.5 px-4 rounded-lg border text-sm transition-all text-left hover:bg-sea-50 border-sea-200 text-[#161d26] flex items-center gap-2" data-worry="medical">
+                <svg class="w-5 h-5 shrink-0 text-brand-500 sketch"><use href="#i-medical"/></svg>擔心自費醫療與重大傷病
               </button>
             </div>
           </div>
 
-          <!-- 結果 -->
-          <div id="calculatorResult" class="mt-6 p-5 rounded-2xl bg-gradient-to-br from-warm-100 to-brand-50 border-2 border-dashed border-warm-300 text-ink transition-all">
-            <div class="flex items-center justify-between gap-3 pb-3 border-b border-dashed border-warm-300">
+          <!-- Dynamic Result Box -->
+          <div id="calculatorResult" class="mt-6 p-5 rounded-2xl bg-brand-50 border-2 border-dashed border-brand-200 transition-all">
+            <div class="flex items-center justify-between gap-3 pb-3 border-b border-dashed border-brand-200">
               <div class="flex items-center gap-2">
                 <svg class="w-6 h-6 shrink-0 text-brand-500 sketch"><use href="#i-sun"/></svg>
-                <span class="font-bold text-lg text-brand-700" id="resultHeadline"></span>
+                <span class="font-bold text-lg text-brand-700" id="resultHeadline">家庭頂樑柱防禦網</span>
               </div>
-              <span class="text-xs bg-white text-brand-600 px-2.5 py-1 rounded-full border border-warm-200 shrink-0">參考看看</span>
+              <span class="text-xs bg-white text-brand-600 px-2.5 py-1 rounded-full border border-brand-200 shrink-0">客觀分析建議</span>
             </div>
 
-            <p class="text-sm text-ink mt-3 leading-relaxed" id="resultDesc"></p>
+            <p class="text-sm text-[#161d26] mt-3 leading-relaxed" id="resultDesc"></p>
 
-            <div class="mt-4 pt-3 border-t border-dashed border-warm-300 flex flex-col sm:flex-row items-center justify-between gap-3">
-              <span class="text-sm text-[#161d26]">想知道自己家的保單有沒有這個問題？</span>
-              <button type="button" onclick="copyToolResultToBooking()" class="text-sm bg-brand-500 hover:bg-brand-600 text-white font-medium px-4 py-2 rounded-lg transition-all w-full sm:w-auto text-center inline-flex items-center justify-center gap-1.5">
+            <div class="mt-4 pt-3 border-t border-dashed border-brand-200 flex flex-col sm:flex-row items-center justify-between gap-3">
+              <span class="text-sm text-[#161d26]">想進一步檢視家中保單是否有此盲點？</span>
+              <button type="button" onclick="copyToolResultToBooking()" class="text-sm bg-brand-500 hover:bg-brand-600 text-white font-medium px-4 py-2 rounded-lg warm-shadow transition-all w-full sm:w-auto text-center inline-flex items-center justify-center gap-1.5 shrink-0">
                 帶著這個結果來約我聊 <svg class="w-4 h-4 sketch"><use href="#i-arrow"/></svg>
               </button>
             </div>
           </div>
+
         </div>
+
       </div>
     </section>
 
@@ -689,7 +707,7 @@
             -->
             <iframe
               id="googleBookingForm"
-              src="https://forms.gle/zWyZ1UcHhxNxNyLm8"
+              src="https://docs.google.com/forms/d/e/1FAIpQLSfzP4gE9ge0_cyWIJ6gmJeeItEvNRkQ8YkKaOsUifsbc82_qw/viewform?embedded=true"
               class="w-full min-h-[760px] sm:min-h-[820px] border-0"
               frameborder="0"
               marginheight="0"
@@ -811,7 +829,7 @@
   <script>
     // 選取狀態的樣式
     const activeClass = ['border-brand-500', 'bg-brand-50', 'text-brand-700', 'font-bold'];
-    const inactiveClass = ['border-warm-200', 'text-ink'];
+    const inactiveClass = ['border-sea-200', 'text-[#161d26]'];
 
     // 1. 手機漢堡選單切換
     const mobileBtn = document.getElementById('mobileMenuBtn');
@@ -828,7 +846,7 @@
       });
     }
 
-    // 2. 小測驗狀態切換
+    // 2. 自測小工具狀態切換 (Interactive Risk Calculator)
     let toolState = {
       stage: 'single',
       budget: 'medium',
@@ -838,24 +856,51 @@
     function updateToolUI() {
       const headline = document.getElementById('resultHeadline');
       const desc = document.getElementById('resultDesc');
-      if (!headline || !desc) return;
+      const s = toolState.stage;
+      const b = toolState.budget;
+      const w = toolState.worry;
 
-      if (toolState.stage === 'baby' || toolState.stage === 'sandwich') {
-        if (toolState.budget === 'tight') {
-          headline.innerText = "建議先顧：大人先保好，小孩買便宜實用的";
-          desc.innerText = "錢不多的時候先不要碰終身險啦！先用定期險把爸媽的保障拉高，小孩一年幾千塊的醫療實支、意外險就很夠，剩下的錢留著付托嬰費。";
-        } else {
-          headline.innerText = "建議先顧：賺錢的人保足，小孩醫療補完整";
-          desc.innerText = "先算算房貸還剩多少、小孩還要養幾年，把爸媽的額度抓出來。癌症、重大傷病這種自費很貴的也一起補齊，不要一個人生病整個家都垮。";
-        }
-      } else if (toolState.stage === 'single') {
-        headline.innerText = "建議先顧：自己生病時不要變成爸媽的負擔";
-        desc.innerText = "單身還沒有要養小孩，壽險不用買很高。重點是萬一自己生病倒下，醫療、手術的自費能自己扛，不要讓爸媽操心。";
-      } else {
-        headline.innerText = "建議先顧：兩個人保得差不多，幫未來的小孩留點錢";
-        desc.innerText = "先把兩個人的房貸、車貸攤開來看，確保其中一個人停工兩三年，家裡還撐得住。舊保單裡繳很多、保很少的可以先整理掉，留點錢給之後的小孩。";
+      let title = "";
+      let content = "";
+
+      // 基於痛點 (worry) 設定主軸，再依據家庭階段 (stage) 與預算 (budget) 微調細節
+      if (w === 'redundant') {
+          title = "保單大掃除與斷捨離";
+          if (s === 'single') content = "單身族最容易因為人情保了許多零碎附約。建議先拉出清單，刪除高保費低保障的終身險，將預算集中在最核心的重大傷病與醫療實支實付。";
+          else if (s === 'couple') content = "新婚夫妻常各自帶著長輩買的舊保單。第一步是盤點雙方重複的意外與醫療險，將整併後省下的保費，轉做未來的育兒基金或房貸預備金。";
+          else if (s === 'baby') content = "新手爸媽常因為「想給寶寶最好的」而買了昂貴的嬰幼兒終身全險，卻排擠了大人的預算。我們需要優先檢視是否有「大人保額不足、小孩保費超標」的倒置狀況。";
+          else content = "身為雙寶或三代同堂的三明治族，『減法』比加法更重要！必須狠下心斷捨離長輩早期買的、或不合時宜的舊保單，把錢留在手邊應付安親班與家庭開銷。";
+
+          if (b === 'tight') content += " 尤其目前預算較緊湊，先幫家庭止血、不再繳冤枉錢是第一要務。";
+          else if (b === 'comfort') content += " 既然預算充裕，可利用整併後的空間，補足新型態的癌症標靶藥物等高階防護。";
+
+      } else if (w === 'pillar') {
+          title = "家庭頂樑柱防禦網";
+          if (s === 'single') content = "單身族沒有撫養小孩的責任，『自己』就是頂樑柱。重心應擺在「萬一自己生病躺下，不成為父母負擔」的失能扶助與醫療，不需要拉高額身故壽險。";
+          else if (s === 'couple') content = "兩人世界剛起步，必須釐清共同負債（房貸、車貸）。確保任何一方因病倒下時，保險理賠金能 Cover 至少 2~3 年的家庭開銷與貸款，不讓另一半崩潰。";
+          else if (s === 'baby') content = "有了第一個孩子，責任瞬間加重。務必貫徹『先保大人再保小孩』，用定期壽險搭配重大傷病，以最低成本撐起千萬等級的家庭防護罩。";
+          else content = "上下夾殺的三明治族，最怕主力賺錢者倒下拖垮全家。除了壽險，『失能險與長照防線』是避免家人陷入照護地獄的最後底線。";
+
+          if (b === 'tight') content += " 預算有限下，千萬別碰昂貴的終身壽險，善用『一年期定期險』把當下最危險的 10-15 年防護撐到最高。";
+          else if (b === 'medium') content += " 在標準預算內，可以完美做到大人撐起責任額，小孩/長輩也有基礎防護的雙贏局面。";
+          else content += " 預算允許下，除了定期壽險，可完整加入高額失能險規劃，確保長期照護不會中斷家人的生活品質。";
+
+      } else if (w === 'medical') {
+          title = "自費醫療與重大傷病升級";
+          if (s === 'single') content = "單身自立的你，最需要的是『生病時的選擇權』。實支實付搭配一次給付型防癌險，能確保你用得起新式微創手術與標靶藥物，安心休養。";
+          else if (s === 'couple') content = "夫妻倆的醫療帳戶應互為後盾。優先補齊雙方的實支實付，避免其中一人遇上昂貴自費療程時，一口氣吃掉兩人辛辛苦苦累積的存款。";
+          else if (s === 'baby') content = "新生兒抵抗力弱，容易因腸病毒等狀況住院。寶寶需要實支實付應付病房費與自費藥物，而大人的防線則必須建立在癌症與重大傷病一次金上。";
+          else content = "雙寶與長輩同堂，全家人的醫療網必須做『嚴格的資源分配』。優先確保家中經濟支柱有高額重大傷病，小孩與長輩則以基礎實支實付與意外險打底。";
+
+          if (b === 'tight') content += " 預算有限時，先求『有單張實支實付』就好，暫不考慮雙實支，並以產險意外險補足基本額度。";
+          else if (b === 'medium') content += " 搭配標準預算，能做到大人完整實支 + 重大傷病，小孩也有足夠資源對抗住院開銷的無憂配置。";
+          else content += " 預算充沛下，可直上高階醫療險，連同長期照護與高頻自費項目一併包辦，給家人最好的醫療品質。";
       }
+
+      headline.innerText = title;
+      desc.innerText = content;
     }
+
 
     function setupToggleGroup(selector, stateKey) {
       const buttons = document.querySelectorAll(selector);
@@ -901,8 +946,8 @@
     function copyToolResultToBooking() {
       const stageBtn = document.querySelector(`.tool-status-btn[data-stage="${toolState.stage}"]`);
       const budgetBtn = document.querySelector(`.tool-budget-btn[data-budget="${toolState.budget}"]`);
-      const stageText = stageBtn ? stageBtn.innerText.trim() : '';
-      const budgetText = budgetBtn ? budgetBtn.innerText.trim() : '';
+      const stageText = stageBtn ? stageBtn.innerText.replace(/\s+/g, ' ').trim() : '';
+      const budgetText = budgetBtn ? budgetBtn.innerText.replace(/\s+/g, ' ').trim() : '';
       const summaryText = `【小測驗結果】現況：${stageText}｜預算：${budgetText}`;
 
       if (navigator.clipboard) {
